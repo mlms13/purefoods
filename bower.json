@@ -1,0 +1,16 @@
+{
+  "name": "purefoods",
+  "homepage": "https://github.com/mlms13/purefoods",
+  "authors": [
+    "Franco Ponticelli <franco.ponticelli@gmail.com>"
+  ],
+  "description": "Pux Application using webpack with hot-reloading.",
+  "main": "support/entry.client.js",
+  "license": "ISC",
+  "dependencies": {
+    "purescript-pux": "^10.0.0",
+    "purescript-css": "^3.0.0",
+    "purescript-aff": "^3.0.0",
+    "purescript-affjax": "^4.0.0"
+  }
+}
