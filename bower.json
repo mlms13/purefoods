@@ -11,6 +11,12 @@
     "purescript-pux": "^10.0.0",
     "purescript-css": "^3.0.0",
     "purescript-aff": "^3.0.0",
-    "purescript-affjax": "^4.0.0"
+    "purescript-affjax": "^4.0.0",
+    "purescript-remotedata": "^2.1.1",
+    "purescript-argonaut": "^3.0.0",
+    "purescript-argonaut-generic": "^1.2.0",
+    "purescript-frontmatter-yaml": "git@github.com:fponticelli/purescript-frontmatter-yaml.git",
+    "purescript-generics-rep": "^5.2.0",
+    "purescript-argonaut-generic": "^1.2.0"
   }
 }

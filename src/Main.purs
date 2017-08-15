@@ -1,7 +1,8 @@
 module Main where
 
 import Prelude
-import App.Events (AppEffects, Event(..), foldp)
+import App.Events (Event(..), foldp)
+import App.AppEffects (AppEffects)
 import App.Routes (match)
 import App.State (State, init)
 import App.View.Layout (view)

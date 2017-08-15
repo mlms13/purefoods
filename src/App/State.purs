@@ -1,20 +1,21 @@
 module App.State where
 
-import App.Config (config)
 import App.Routes (Route, match)
+import App.Food (Food)
+import Data.List (List)
 import Data.Newtype (class Newtype)
+import Network.RemoteData (RemoteData(..))
+
 
 newtype State = State
-  { title :: String
-  , route :: Route
-  , loaded :: Boolean
+  { route :: Route
+  , foods :: RemoteData String (List Food)
   }
 
 derive instance newtypeState :: Newtype State _
 
 init :: String -> State
 init url = State
-  { title: config.title
-  , route: match url
-  , loaded: false
+  { route: match url
+  , foods: NotAsked
   }
