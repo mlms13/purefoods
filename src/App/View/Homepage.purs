@@ -6,17 +6,19 @@ import App.State (State(..))
 import Control.Bind (discard)
 import Data.Foldable (for_)
 import Data.Function (($))
+import Data.Maybe (maybe)
+import Data.Show (show)
 import Data.Unit (Unit)
 import Network.RemoteData (RemoteData(..))
 import Pux.DOM.Events (DOMEvent)
 import Pux.DOM.HTML (HTML)
-import Text.Smolder.HTML (a, div, h1, li, ul)
+import Text.Smolder.HTML (a, div, h1, i, li, span, ul)
 import Text.Smolder.HTML.Attributes (href, className)
-import Text.Smolder.Markup (MarkupM, text, (!))
+import Text.Smolder.Markup (MarkupM, leaf, text, (!))
 
 view :: State -> HTML Event
 view (State { foods: Success foods }) =
-  ul do
+  ul ! className "food-cards" $ do
     for_ foods $ foodLi
 
 view (State { foods: Failure err }) =
@@ -31,4 +33,17 @@ view s =
 
 foodLi :: Food -> MarkupM (DOMEvent -> Event) Unit
 foodLi (Food food) =
-  li $ text food.name
+  li ! className "food-card" $ do
+    div $ do
+      span ! className "food-name" $ text food.name
+      maybe (text "") (\s -> span ! className "food-preparation" $ text s) food.description
+    div ! className "food-numbers" $ do
+      div ! className "food-number-reflux" $ do
+        leaf "i" ! className "food-card-icon icon-reflux"
+        text $ show food.reflux
+      div ! className "food-number-irritant" $ do
+        leaf "i" ! className "food-card-icon icon-irritant"
+        text $ show food.irritant
+      div ! className "food-number-bacteria" $ do
+        leaf "i" ! className "food-card-icon icon-bacteria"
+        text $ show food.bacteria

@@ -1,18 +1,25 @@
 module App.View.Layout where
 
-import App.View.Homepage as Homepage
-import App.View.NotFound as NotFound
+import App.Events (Event)
 import App.Routes (Route(NotFound, Home))
 import App.State (State(..))
-import App.Events (Event)
-import CSS (CSS, fromString, (?), fontSize, display, inlineBlock, marginTop, marginRight, marginLeft, px, value, key, color, backgroundColor, padding, borderRadius)
+import App.View.Homepage as Homepage
+import App.View.NotFound as NotFound
+import CSS (CSS, color, fromString, key, marginLeft, px, value, (?))
+import CSS.Background (backgroundColor)
 import CSS.Border (border, solid)
-import CSS.TextAlign (center, textAlign)
-import CSS.Text (textDecoration, noneTextDecoration, letterSpacing)
-import CSS.Text.Transform (textTransform, uppercase)
-import Color (rgb)
+import CSS.Box (borderBox, boxShadow, boxSizing)
+import CSS.Display (display, flex)
+import CSS.Flexbox (flexWrap, justifyContent, spaceAround, wrap)
+import CSS.Font (fontSize)
+import CSS.Geometry (marginBottom, marginRight, marginTop, padding, width)
+import CSS.ListStyle.Type (ListStyleType(..), listStyleType)
+import CSS.Size (pct)
+import CSS.Text (noneTextDecoration, textDecoration, underline)
+import Color (darken, lighten, rgb, rgba)
+import Color.Scheme.Clrs (green, red)
 import Control.Bind (discard)
-import Data.Function (($), (#))
+import Data.Function (($))
 import Pux.DOM.HTML (HTML, style)
 import Text.Smolder.HTML (div)
 import Text.Smolder.HTML.Attributes (className)
@@ -29,42 +36,74 @@ view (State st) =
 
 css :: CSS
 css = do
-  let green = rgb 14 196 172
-      blue = rgb 14 154 196
-      white = rgb 250 250 250
+  let white = rgb 255 255 255
+      -- gray and shades
+      gray = rgb 130 130 130
+      grayLightest = lighten 0.4 gray
+      grayLighter = lighten 0.2 gray
+      grayLight = lighten 0.1 gray
+      grayDark = darken 0.1 gray
+      grayDarker = darken 0.2 gray
+      grayDarkest = darken 0.3 gray
+
+      -- primary/accent and shades
+      blue = rgb 20 40 230
+      primary = blue
+      primaryLight = lighten 0.1 primary
+
+      -- shorthand helpers
+      paddingAll amt = padding (px amt) (px amt) (px amt) (px amt)
+
+  fromString "*" ? do
+    boxSizing borderBox
 
   fromString "body" ? do
-    backgroundColor (rgb 0 20 30)
+    backgroundColor grayLightest
     key (fromString "font-family") (value "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif")
-    color white
-    textAlign center
-
-  fromString "h1" ? do
-    fontSize (48.0 #px)
-    marginTop (48.0 #px)
-    textTransform uppercase
-    letterSpacing (6.0 #px)
 
   fromString "a" ? do
-    display inlineBlock
-    borderRadius (2.0 #px) (2.0 #px) (2.0 #px) (2.0 #px)
-    padding (6.0 #px) (6.0 #px) (6.0 #px) (6.0 #px)
+    color primary
     textDecoration noneTextDecoration
 
-  fromString ".guide" ? do
-    border solid (2.0 #px) green
-    color green
-    marginRight (10.0 #px)
+  fromString "a:hover" ? do
+    color primaryLight
+    textDecoration underline
 
-  fromString ".guide:hover" ? do
-    backgroundColor green
-    color white
+  fromString ".food-cards" ? do
+    display flex
+    flexWrap wrap
+    justifyContent spaceAround
+    listStyleType None
 
-  fromString ".github" ? do
-    border solid (2.0 #px) blue
+  fromString ".food-card" ? do
+    backgroundColor white
+    border solid (px 1.0) grayLighter
+    boxShadow (px 1.0) (px 1.0) (px 5.0) $ rgba 0 0 0 0.2
+    marginBottom $ px 20.0
+    paddingAll 20.0
+    width $ pct 30.0
+
+  fromString ".food-name" ? do
+    color grayDarkest
+
+  fromString ".food-preparation" ? do
+    color gray
+    marginLeft $ px 8.0
+
+  fromString ".food-numbers" ? do
+    display flex
+    fontSize $ px 26.0
+    justifyContent spaceAround
+    marginTop $ px 10.0
+
+  fromString ".food-number-reflux" ? do
+    color red
+
+  fromString ".food-number-irritant" ? do
     color blue
-    marginLeft (10.0 #px)
 
-  fromString ".github:hover" ? do
-    backgroundColor blue
-    color white
+  fromString ".food-number-bacteria" ? do
+    color green
+
+  fromString ".food-card-icon" ? do
+    marginRight $ px 10.0

@@ -3,13 +3,12 @@ module App.Food where
 import Control.Applicative (pure)
 import Data.Argonaut.Core (toString)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson)
-import Data.Argonaut.Decode.Combinators ((.?))
-import Data.Argonaut.Decode.Generic.Rep (genericDecodeJson)
+import Data.Argonaut.Decode.Combinators ((.?), (.??))
 import Data.Either (Either(..))
 import Data.Functor ((<$>))
 import Data.Generic.Rep (class Generic)
 import Data.List.Types (List)
-import Data.Maybe (fromMaybe)
+import Data.Maybe (Maybe, fromMaybe)
 import Data.Semigroup ((<>))
 import Prelude (bind, ($))
 
@@ -31,6 +30,7 @@ data FoodCategory
 
 newtype Food = Food
   { name :: String
+  , description :: Maybe String
   , aliases :: List String
   , category :: FoodCategory
   , reflux :: Int
@@ -67,11 +67,12 @@ instance decodeJsonFood :: DecodeJson Food where
   decodeJson json = do
     obj <- decodeJson json
     name <- obj .? "name"
+    description <- obj .?? "description"
     aliases <- obj .? "aliases"
     category <- obj .? "category"
     reflux <- obj .? "reflux"
     irritant <- obj .? "irritant"
     bacteria <- obj .? "bacteria"
     pure $ Food
-     { name, aliases, category, reflux, irritant, bacteria }
+     { name, description, aliases, category, reflux, irritant, bacteria }
 
