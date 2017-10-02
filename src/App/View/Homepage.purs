@@ -12,7 +12,7 @@ import Data.Unit (Unit)
 import Network.RemoteData (RemoteData(..))
 import Pux.DOM.Events (DOMEvent)
 import Pux.DOM.HTML (HTML)
-import Text.Smolder.HTML (a, div, h1, i, li, span, ul)
+import Text.Smolder.HTML (a, div, h1, li, span, ul)
 import Text.Smolder.HTML.Attributes (href, className)
 import Text.Smolder.Markup (MarkupM, leaf, text, (!))
 

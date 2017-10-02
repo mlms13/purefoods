@@ -40,6 +40,7 @@ newtype Food = Food
 
 
 derive instance genericRepFoodCategory :: Generic FoodCategory _
+
 instance decodeJsonFoodCategory :: DecodeJson FoodCategory where
   decodeJson json = do
     str <-  fromMaybe (Left "Failed to parse as string") (Right <$> toString json)

@@ -16,7 +16,6 @@
     "purescript-argonaut": "^3.0.0",
     "purescript-argonaut-generic": "^1.2.0",
     "purescript-frontmatter-yaml": "git@github.com:fponticelli/purescript-frontmatter-yaml.git",
-    "purescript-generics-rep": "^5.2.0",
-    "purescript-argonaut-generic": "^1.2.0"
+    "purescript-generics-rep": "^5.2.0"
   }
 }
