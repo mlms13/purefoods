@@ -1,40 +1,52 @@
 module App.View.Homepage where
 
+import App.Data.Food (Food(..), byCategory)
 import App.Events (Event)
-import App.Food (Food(..))
 import App.State (State(..))
-import Control.Bind (discard)
+import Control.Bind (discard, (<$>))
 import Data.Foldable (for_)
 import Data.Function (($))
+import Data.List.NonEmpty (head)
+import Data.List.Types (NonEmptyList)
 import Data.Maybe (maybe)
+import Data.Monoid (mempty)
 import Data.Show (show)
 import Data.Unit (Unit)
 import Network.RemoteData (RemoteData(..))
 import Pux.DOM.Events (DOMEvent)
 import Pux.DOM.HTML (HTML)
-import Text.Smolder.HTML (a, div, h1, li, span, ul)
-import Text.Smolder.HTML.Attributes (href, className)
+import Text.Smolder.HTML (div, li, span, ul, h2)
+import Text.Smolder.HTML.Attributes (className)
 import Text.Smolder.Markup (MarkupM, leaf, text, (!))
 
 view :: State -> HTML Event
-view (State { foods: Success foods }) =
-  ul ! className "food-cards" $ do
-    for_ foods $ foodLi
+view (State { foods: Success all }) =
+  let
+    foods = byCategory all
+  in
+  ul ! className "food-categories" $ do
+    for_ foods viewCategoryLi
 
 view (State { foods: Failure err }) =
   div $ text err
 
-view s =
-  div do
-    h1 $ text "Pux"
-    a ! className "guide" ! href "https://www.purefoods.org/" $ text "Guide"
-    a ! className "github" ! href "https://github.com/mlms13/purefoods/" $ text "GitHub"
+view _ =
+  div mempty
 
+
+viewCategoryLi :: NonEmptyList Food -> MarkupM (DOMEvent -> Event) Unit
+viewCategoryLi foods =
+  let Food({ category }) = (head foods)
+  in
+  li ! className "food-category" $ do
+    h2 ! className "food-category-title" $ text (show category)
+    ul ! className "food-cards" $ do
+      for_ foods foodLi
 
 foodLi :: Food -> MarkupM (DOMEvent -> Event) Unit
 foodLi (Food food) =
   li ! className "food-card" $ do
-    div $ do
+    div ! className "food-card-text" $ do
       span ! className "food-name" $ text food.name
       maybe (text "") (\s -> span ! className "food-preparation" $ text s) food.description
     div ! className "food-numbers" $ do

@@ -5,10 +5,10 @@ import App.Routes (Route(NotFound, Home))
 import App.State (State(..))
 import App.View.Homepage as Homepage
 import App.View.NotFound as NotFound
-import CSS (CSS, color, fromString, key, marginLeft, px, value, (?))
+import CSS (CSS, block, bold, borderBottom, color, column, flexDirection, fontFamily, fontWeight, fromString, marginLeft, maxWidth, minHeight, paddingLeft, px, sansSerif, solid, (?))
 import CSS.Background (backgroundColor)
-import CSS.Border (border, solid)
-import CSS.Box (borderBox, boxShadow, boxSizing)
+import CSS.Box (borderBox, boxSizing)
+import CSS.Common (auto)
 import CSS.Display (display, flex)
 import CSS.Flexbox (flexWrap, justifyContent, spaceAround, wrap)
 import CSS.Font (fontSize)
@@ -16,10 +16,10 @@ import CSS.Geometry (marginBottom, marginRight, marginTop, padding, width)
 import CSS.ListStyle.Type (ListStyleType(..), listStyleType)
 import CSS.Size (pct)
 import CSS.Text (noneTextDecoration, textDecoration, underline)
-import Color (darken, lighten, rgb, rgba)
-import Color.Scheme.Clrs (green, red)
+import Color (darken, lighten, rgb)
 import Control.Bind (discard)
 import Data.Function (($))
+import Data.NonEmpty (singleton)
 import Pux.DOM.HTML (HTML, style)
 import Text.Smolder.HTML (div)
 import Text.Smolder.HTML.Attributes (className)
@@ -39,9 +39,9 @@ css = do
   let white = rgb 255 255 255
       -- gray and shades
       gray = rgb 130 130 130
-      grayLightest = lighten 0.4 gray
-      grayLighter = lighten 0.2 gray
-      grayLight = lighten 0.1 gray
+      grayLightest = rgb 244 244 244
+      grayLighter = lighten 0.4 gray
+      grayLight = lighten 0.3 gray
       grayDark = darken 0.1 gray
       grayDarker = darken 0.2 gray
       grayDarkest = darken 0.3 gray
@@ -58,8 +58,8 @@ css = do
     boxSizing borderBox
 
   fromString "body" ? do
-    backgroundColor grayLightest
-    key (fromString "font-family") (value "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,Oxygen-Sans,Ubuntu,Cantarell,\"Helvetica Neue\",sans-serif")
+    backgroundColor grayLighter
+    fontFamily ["Lato"] $ singleton sansSerif
 
   fromString "a" ? do
     color primary
@@ -69,41 +69,69 @@ css = do
     color primaryLight
     textDecoration underline
 
+  fromString ".app" ? do
+    maxWidth $ px 1100.0
+    marginRight auto
+    marginLeft auto
+
+  fromString ".food-categories" ? do
+    listStyleType None
+    paddingLeft $ px 0.0
+
+  fromString ".food-category-title" ? do
+    borderBottom solid (px 2.0) grayLight
+    fontFamily ["Catamaran"] $ singleton sansSerif
+    fontSize $ px 30.0
+    fontWeight bold
+
   fromString ".food-cards" ? do
     display flex
     flexWrap wrap
-    justifyContent spaceAround
     listStyleType None
+    paddingLeft $ px 0.0
 
   fromString ".food-card" ? do
     backgroundColor white
-    border solid (px 1.0) grayLighter
-    boxShadow (px 1.0) (px 1.0) (px 5.0) $ rgba 0 0 0 0.2
+    display flex
+    flexDirection column
     marginBottom $ px 20.0
-    paddingAll 20.0
-    width $ pct 30.0
+    marginRight $ pct 2.0
+    minHeight $ px 130.0
+    width $ pct 32.0
+
+  fromString ".food-card:nth-child(3n)" ? do
+    marginRight $ pct 0.0
+
+  fromString ".food-card-text" ? do
+    padding (px 12.0) (px 20.0) (px 0.0) (px 20.0)
 
   fromString ".food-name" ? do
-    color grayDarkest
+    color grayDarker
+    fontFamily ["Catamaran"] $ singleton sansSerif
+    fontSize $ px 24.0
+    fontWeight bold
 
   fromString ".food-preparation" ? do
-    color gray
-    marginLeft $ px 8.0
+    color grayLight
+    display block
+    fontSize $ px 14.0
 
   fromString ".food-numbers" ? do
+    backgroundColor grayLightest
+    color gray
     display flex
-    fontSize $ px 26.0
+    fontSize $ px 18.0
     justifyContent spaceAround
-    marginTop $ px 10.0
+    marginTop auto
 
   fromString ".food-number-reflux" ? do
-    color red
+    paddingAll 10.0
 
   fromString ".food-number-irritant" ? do
-    color blue
+    paddingAll 10.0
 
   fromString ".food-number-bacteria" ? do
-    color green
+    paddingAll 10.0
 
   fromString ".food-card-icon" ? do
     marginRight $ px 10.0

@@ -2,7 +2,7 @@ module App.Events where
 
 import App.Api (loadFoods)
 import App.AppEffects (AppEffects)
-import App.Food (Food)
+import App.Data.Food (Food)
 import App.Routes (Route)
 import App.State (State(..))
 import Control.Applicative (pure)

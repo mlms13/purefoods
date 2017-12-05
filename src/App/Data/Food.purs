@@ -1,4 +1,4 @@
-module App.Food where
+module App.Data.Food where
 
 import Control.Applicative (pure)
 import Data.Argonaut.Core (toString)
@@ -7,10 +7,12 @@ import Data.Argonaut.Decode.Combinators ((.?), (.??))
 import Data.Either (Either(..))
 import Data.Functor ((<$>))
 import Data.Generic.Rep (class Generic)
-import Data.List.Types (List)
+import Data.List (groupBy)
+import Data.List.Types (List, NonEmptyList)
 import Data.Maybe (Maybe, fromMaybe)
 import Data.Semigroup ((<>))
-import Prelude (bind, ($))
+import Prelude (class Eq, class Show, bind, ($), (==))
+import Type.Data.Boolean (kind Boolean)
 
 data FoodCategory
   = Protein
@@ -38,6 +40,10 @@ newtype Food = Food
   , bacteria :: Int
   }
 
+byCategory :: List Food -> List (NonEmptyList Food)
+byCategory =
+  groupBy sameCat where
+  sameCat (Food a) (Food b) = a.category == b.category
 
 derive instance genericRepFoodCategory :: Generic FoodCategory _
 
@@ -77,3 +83,19 @@ instance decodeJsonFood :: DecodeJson Food where
     pure $ Food
      { name, description, aliases, category, reflux, irritant, bacteria }
 
+derive instance eqFoodCategory :: Eq FoodCategory
+instance showFoodCategory :: Show FoodCategory where
+  show Protein = "Protein"
+  show Dairy = "Dairy"
+  show Nut = "Nut"
+  show Seeds = "Seeds"
+  show Legume = "Legume"
+  show Grain = "Grain"
+  show Vegetable = "Vegetable"
+  show Fruit = "Fruit"
+  show Liquid = "Liquid"
+  show Tea = "Tea"
+  show Misc = "Misc"
+  show Sweetener = "Sweetener"
+  show Spice = "Spice"
+  show Medication = "Medication"
