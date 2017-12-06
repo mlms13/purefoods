@@ -2,6 +2,7 @@ module App.Events where
 
 import App.Api (loadFoods)
 import App.AppEffects (AppEffects)
+import App.Data.DietPhase (DietPhase)
 import App.Data.Food (Food)
 import App.Routes (Route)
 import App.State (FoodFilter(..), State(..))
@@ -15,7 +16,8 @@ import Pux (EffModel, noEffects)
 data Event
   = PageView Route
   | Content (RemoteData String (List Food))
-  | Filter String
+  | Search String
+  | Filter (Maybe DietPhase)
 
 foldp :: ∀ fx. Event -> State -> EffModel State Event (AppEffects fx)
 foldp eff (State st @ {foods: NotAsked }) =
@@ -31,8 +33,15 @@ foldp (Content NotAsked) (State st) =
     ]
   }
 foldp (Content val) (State st) = noEffects $ State st { foods = val }
-foldp (Filter str) (State st) =
+
+foldp (Search str) (State st) =
   noEffects $ State st { filter = filter} where
   (FoodFilter curr) = st.filter
   filter = FoodFilter curr { search = str }
+
+foldp (Filter phase) (State st) =
+  noEffects $ State st { filter = filter } where
+  (FoodFilter curr) = st.filter
+  filter = FoodFilter curr { phase = phase }
+
 foldp (PageView route) (State st) = noEffects $ State st { route = route }
