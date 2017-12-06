@@ -4,7 +4,7 @@ import App.Api (loadFoods)
 import App.AppEffects (AppEffects)
 import App.Data.Food (Food)
 import App.Routes (Route)
-import App.State (State(..))
+import App.State (FoodFilter(..), State(..))
 import Control.Applicative (pure)
 import Data.List (List)
 import Data.Maybe (Maybe(..))
@@ -15,6 +15,7 @@ import Pux (EffModel, noEffects)
 data Event
   = PageView Route
   | Content (RemoteData String (List Food))
+  | Filter String
 
 foldp :: ∀ fx. Event -> State -> EffModel State Event (AppEffects fx)
 foldp eff (State st @ {foods: NotAsked }) =
@@ -29,5 +30,9 @@ foldp (Content NotAsked) (State st) =
       pure $ Just $ Content content
     ]
   }
-foldp (Content val) (State st) =  noEffects $ State st { foods = val }
+foldp (Content val) (State st) = noEffects $ State st { foods = val }
+foldp (Filter str) (State st) =
+  noEffects $ State st { filter = filter} where
+  (FoodFilter curr) = st.filter
+  filter = FoodFilter curr { search = str }
 foldp (PageView route) (State st) = noEffects $ State st { route = route }

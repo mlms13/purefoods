@@ -2,8 +2,8 @@ module App.View.Homepage where
 
 import App.Data.Food (Food(..), byCategory)
 import App.Events (Event)
-import App.State (State(..))
-import Control.Bind (discard, (<$>))
+import App.State (State(..), applyFilter)
+import Control.Bind (discard)
 import Data.Foldable (for_)
 import Data.Function (($))
 import Data.List.NonEmpty (head)
@@ -20,11 +20,11 @@ import Text.Smolder.HTML.Attributes (className)
 import Text.Smolder.Markup (MarkupM, leaf, text, (!))
 
 view :: State -> HTML Event
-view (State { foods: Success all }) =
+view (State { foods: Success all, filter }) =
   let
-    foods = byCategory all
+    foods = byCategory $ applyFilter filter all
   in
-  ul ! className "food-categories" $ do
+  ul ! className "container food-categories" $ do
     for_ foods viewCategoryLi
 
 view (State { foods: Failure err }) =
@@ -41,10 +41,10 @@ viewCategoryLi foods =
   li ! className "food-category" $ do
     h2 ! className "food-category-title" $ text (show category)
     ul ! className "food-cards" $ do
-      for_ foods foodLi
+      for_ foods viewFoodLi
 
-foodLi :: Food -> MarkupM (DOMEvent -> Event) Unit
-foodLi (Food food) =
+viewFoodLi :: Food -> MarkupM (DOMEvent -> Event) Unit
+viewFoodLi (Food food) =
   li ! className "food-card" $ do
     div ! className "food-card-text" $ do
       span ! className "food-name" $ text food.name

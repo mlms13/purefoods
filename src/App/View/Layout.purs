@@ -1,11 +1,11 @@
 module App.View.Layout where
 
-import App.Events (Event)
+import App.Events (Event(..))
 import App.Routes (Route(NotFound, Home))
-import App.State (State(..))
+import App.State (FoodFilter(..), State(..))
 import App.View.Homepage as Homepage
 import App.View.NotFound as NotFound
-import CSS (CSS, block, bold, borderBottom, color, column, flexDirection, fontFamily, fontWeight, fromString, marginLeft, maxWidth, minHeight, paddingLeft, px, sansSerif, solid, (?))
+import CSS (CSS, block, bold, border, borderBottom, color, column, flexDirection, flexGrow, fontFamily, fontWeight, fromString, margin, marginLeft, maxWidth, minHeight, paddingBottom, paddingLeft, paddingTop, px, sansSerif, solid, (?))
 import CSS.Background (backgroundColor)
 import CSS.Box (borderBox, boxSizing)
 import CSS.Common (auto)
@@ -18,21 +18,32 @@ import CSS.Size (pct)
 import CSS.Text (noneTextDecoration, textDecoration, underline)
 import Color (darken, lighten, rgb)
 import Control.Bind (discard)
-import Data.Function (($))
+import Data.Function (($), (<<<))
 import Data.NonEmpty (singleton)
+import Pux.DOM.Events (onKeyUp, targetValue)
 import Pux.DOM.HTML (HTML, style)
-import Text.Smolder.HTML (div)
-import Text.Smolder.HTML.Attributes (className)
-import Text.Smolder.Markup ((!))
+import Text.Smolder.HTML (div, header, input)
+import Text.Smolder.HTML.Attributes (className, placeholder, type', value)
+import Text.Smolder.Markup ((!), (#!))
 
 view :: State -> HTML Event
 view (State st) =
   div ! className "app" $ do
     style css
+    viewHeader st.filter
+    viewBody $ State st
 
-    case st.route of
-      (Home) -> Homepage.view (State st)
-      (NotFound url) -> NotFound.view (State st)
+viewHeader :: FoodFilter -> HTML Event
+viewHeader (FoodFilter { search, phase }) =
+  header ! className "app-header" $ do
+    div ! className "container d-flex" $ do
+      input ! className "search-input" ! type' "text" ! placeholder "Filter" ! value search #! onKeyUp (Filter <<< targetValue)
+
+viewBody :: State -> HTML Event
+viewBody (State st) =
+  case st.route of
+    Home -> Homepage.view (State st)
+    NotFound url -> NotFound.view (State st)
 
 css :: CSS
 css = do
@@ -60,6 +71,8 @@ css = do
   fromString "body" ? do
     backgroundColor grayLighter
     fontFamily ["Lato"] $ singleton sansSerif
+    paddingAll 0.0
+    margin (px 0.0) (px 0.0) (px 0.0) (px 0.0)
 
   fromString "a" ? do
     color primary
@@ -69,10 +82,24 @@ css = do
     color primaryLight
     textDecoration underline
 
-  fromString ".app" ? do
+  fromString ".container" ? do
     maxWidth $ px 1100.0
     marginRight auto
     marginLeft auto
+
+  fromString ".d-flex" ? do
+    display flex
+
+  fromString ".app-header" ? do
+    backgroundColor grayDarker
+    paddingTop $ px 20.0
+    paddingBottom $ px 20.0
+
+  fromString ".search-input" ? do
+    border solid (px 0.0) white
+    flexGrow 1
+    fontSize $ px 16.0
+    padding (px 6.0) (px 10.0) (px 6.0) (px 10.0)
 
   fromString ".food-categories" ? do
     listStyleType None
