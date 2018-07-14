@@ -15,7 +15,7 @@ newtype Tolerance = Tolerance
 
 tolerance :: DietPhase -> Tolerance
 tolerance One = Tolerance
-  { reflux: 3, irritant: 3, bacteria: 3 }
+  { reflux: 3, irritant: 3, bacteria: 4 }
 tolerance Two = Tolerance
   { reflux: 5, irritant: 5, bacteria: 5 }
 tolerance Three = Tolerance
