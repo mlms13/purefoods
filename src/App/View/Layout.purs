@@ -6,7 +6,7 @@ import App.Routes (Route(NotFound, Home))
 import App.State (FoodFilter(..), State(..))
 import App.View.Homepage as Homepage
 import App.View.NotFound as NotFound
-import CSS (CSS, block, bold, border, borderBottom, color, column, flexDirection, flexGrow, fontFamily, fontWeight, fromString, key, lineHeight, margin, marginLeft, maxWidth, minHeight, paddingBottom, paddingLeft, paddingRight, paddingTop, px, sansSerif, solid, (?))
+import CSS (CSS, block, bold, border, borderBottom, color, column, fixed, flexDirection, flexGrow, fontFamily, fontWeight, fromString, key, left, lineHeight, margin, marginLeft, maxWidth, minHeight, paddingBottom, paddingLeft, paddingRight, paddingTop, position, px, right, sansSerif, solid, top, (?))
 import CSS.Background (backgroundColor)
 import CSS.Box (borderBox, boxSizing)
 import CSS.Common (auto)
@@ -95,6 +95,7 @@ css = do
     backgroundColor grayLighter
     fontFamily ["Lato"] $ singleton sansSerif
     paddingAll 0.0
+    paddingTop (px 60.0)
     margin (px 0.0) (px 0.0) (px 0.0) (px 0.0)
 
   fromString "a" ? do
@@ -117,6 +118,11 @@ css = do
     backgroundColor grayDarker
     paddingTop $ px 20.0
     paddingBottom $ px 20.0
+    position fixed
+    top $ px 0.0
+    left $ px 0.0
+    right $ px 0.0
+
 
   fromString ".search-input" ? do
     border solid (px 0.0) white
